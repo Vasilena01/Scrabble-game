@@ -1,2 +1,1 @@
-﻿  Scrabble.cpp
-  Scrabble.vcxproj -> D:\Projects\C++\Scrabble game\Scrabble\x64\Debug\Scrabble.exe
+﻿LINK : fatal error LNK1168: cannot open D:\Projects\C++\Scrabble game\Scrabble\x64\Debug\Scrabble.exe for writing

@@ -1,15 +1,74 @@
 #include <iostream>
 #include <fstream>
 
+const int MAX_LETTERS_COUNT = 100;
+const int MAX_ROUNDS_COUNT = 30;
+
+int getWordLen(char* word)
+{
+	int count = 0;
+
+	while (*word)
+	{
+		count++;
+		word++;
+	}
+	return count;
+}
+
+void generateRandomLetters(int count, char*& letters)
+{
+	char letter;
+	int num;
+
+	for (int i = 0; i < count; i++)
+	{
+		num = rand() % 26;   // generate a random number
+		letter = 'a' + num;	// converts the random generated num to a character from a-z
+		letters[i] = letter;
+		std::cout << letter << " ";
+	}
+	std::cout << std::endl;
+}
+
+bool isWordValid(char* word, const char* letters, int lettersCount)
+{
+	int wordLen = getWordLen(word);
+	std::cout << wordLen;
+	return true;
+}
+
 void playGame(unsigned lettersCount, unsigned roundsCount)
 {
-	std::cout << 1;
+	int currentRound = 1;
+	int points = 0;
+
+	while (currentRound <= roundsCount)
+	{
+		std::cout << "Round " << currentRound << ". Available letters: ";
+
+		// Generating the letters
+		char* letters = new char[lettersCount];
+		generateRandomLetters(lettersCount, letters);
+		
+		// Check if the given word is valid
+		char word[MAX_LETTERS_COUNT] = "";
+		bool isValid = false;
+		do {
+			std::cout << "Enter a word: ";
+			std::cin >> word;
+
+			isValid = isWordValid(word, letters, lettersCount);
+			std::cout << word;
+		} while (!isValid);
+
+		currentRound++;
+		delete[] letters;
+	}
 }
 
 void editSettings(unsigned& lettersCount, unsigned& roundsCount)
 {
-	const int MAX_LETTERS_COUNT = 100;
-	const int MAX_ROUNDS_COUNT = 30;
 	int option;
 	unsigned changedLettersCount;
 	unsigned changedRoundsCount;
@@ -62,7 +121,7 @@ void editSettings(unsigned& lettersCount, unsigned& roundsCount)
 	}
 }
 
-void adToDictionary()
+void addToDictionary()
 {
 	const int MAX_WORD_SIZE = 10;
 
@@ -106,6 +165,7 @@ int main()
 		switch (option)
 		{
 			case 1:
+				srand(time(NULL)); // initialize the random number generator
 				playGame(lettersCount, roundsCount);
 				readyToPlay = true;
 				break;
@@ -115,7 +175,7 @@ int main()
 				std::cout << "Rounds: " << roundsCount << std::endl;
 				break;
 			case 3:
-				adToDictionary();
+				addToDictionary();
 				break;
 			default:
 				return -1;
