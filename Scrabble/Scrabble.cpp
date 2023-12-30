@@ -6,6 +6,11 @@ const int MAX_ROUNDS_COUNT = 30;
 
 int getWordLen(char* word)
 {
+	if (!word)
+	{
+		return -1;
+	}
+
 	int count = 0;
 
 	while (*word)
@@ -14,6 +19,19 @@ int getWordLen(char* word)
 		word++;
 	}
 	return count;
+}
+
+void fillWithZeros(bool*& arr, int len)
+{
+	if (!arr)
+	{
+		return;
+	}
+
+	for (int i = 0; i < len; i++)
+	{
+		arr[i] = 0;
+	}
 }
 
 void generateRandomLetters(int count, char*& letters)
@@ -31,11 +49,49 @@ void generateRandomLetters(int count, char*& letters)
 	std::cout << std::endl;
 }
 
-bool isWordValid(char* word, const char* letters, int lettersCount)
+bool isLetterInGivenLetters(char letter, char* letters, bool*& letterOccurences, int lettersCount)
 {
+	for(int i = 0; i < lettersCount; i++)
+	{
+		// If we have two equal letters and the given letters contain min one time this letter, 
+		// we want to check if there is a second occurence in the sequance of letters, because
+		// when we use one letter, we can't use it anymore
+ 
+		if (letter == letters[i] && letterOccurences[i] < 1)
+		{
+			letterOccurences[i]++;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool isWordValid(char* word, char* letters, int lettersCount)
+{
+	if (!word || !letters)
+	{
+		return false;
+	}
+
+	bool isValid = false;
 	int wordLen = getWordLen(word);
-	std::cout << wordLen;
-	return true;
+	bool* letterOccurences = new bool[lettersCount];
+	fillWithZeros(letterOccurences, lettersCount);
+
+	// Check if the given letters contain all letters from our word 
+	for (int i = 0; i < wordLen; i++)
+	{
+		isValid = isLetterInGivenLetters(word[i], letters, letterOccurences, lettersCount);
+		if (!isValid)
+		{
+			break;
+		}
+	}
+
+	// Check if the dictionary contains the word
+
+	delete[] letterOccurences;
+	return isValid;
 }
 
 void playGame(unsigned lettersCount, unsigned roundsCount)
@@ -52,19 +108,36 @@ void playGame(unsigned lettersCount, unsigned roundsCount)
 		generateRandomLetters(lettersCount, letters);
 		
 		// Check if the given word is valid
-		char word[MAX_LETTERS_COUNT] = "";
+		char* word = new char[lettersCount + 1];
+		word[lettersCount] = '\0';
+
 		bool isValid = false;
 		do {
 			std::cout << "Enter a word: ";
 			std::cin >> word;
 
 			isValid = isWordValid(word, letters, lettersCount);
-			std::cout << word;
 		} while (!isValid);
 
+		// Calculating the points
+		if (isValid)
+		{
+			points += getWordLen(word);
+		}
+
+		if (currentRound < roundsCount)
+		{
+			std::cout << "Your points so far are: " << points << std::endl;
+		}
+
 		currentRound++;
+
 		delete[] letters;
+		delete[] word;
 	}
+
+	std::cout << "Your total points are: " << points << std::endl;
+	std::cout << "Returning to menu..." << std::endl;
 }
 
 void editSettings(unsigned& lettersCount, unsigned& roundsCount)
@@ -148,12 +221,12 @@ void addToDictionary()
 
 int main()
 {
-	bool readyToPlay = false;
+	bool readyToPlay = true;
 	unsigned lettersCount = 10;
 	unsigned roundsCount = 10;
 	unsigned option;
 
-	while (!readyToPlay)
+	while (readyToPlay)
 	{
 		std::cout << "Select one from the options bellow (1, 2, 3, 4):" << std::endl;
 		std::cout << "1. Start a new game" << std::endl;
@@ -167,7 +240,6 @@ int main()
 			case 1:
 				srand(time(NULL)); // initialize the random number generator
 				playGame(lettersCount, roundsCount);
-				readyToPlay = true;
 				break;
 			case 2:
 				editSettings(lettersCount, roundsCount);
@@ -178,6 +250,7 @@ int main()
 				addToDictionary();
 				break;
 			default:
+				readyToPlay = false;
 				return -1;
 		}
 	}
