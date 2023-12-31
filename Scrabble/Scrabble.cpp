@@ -21,6 +21,22 @@ int getWordLen(char* word)
 	return count;
 }
 
+int stringCompare(const char* string1,const char* string2)
+{
+	if (!string1 || !string2)
+	{
+		return -1;
+	}
+
+	while (*string1 && ((*string1) == (*string2)))
+	{
+		string1++;
+		string2++;
+	}
+
+	return (*string1 - *string2);
+}
+
 void fillWithZeros(bool*& arr, int len)
 {
 	if (!arr)
@@ -66,6 +82,37 @@ bool isLetterInGivenLetters(char letter, char* letters, bool*& letterOccurences,
 	return false;
 }
 
+bool isWordInDictionary(const char* word, int lettersCount)
+{
+	if (!word)
+	{
+		return false;
+	}
+
+	std::ifstream dictionaryFile("Dictionary.txt");
+
+	if (!dictionaryFile.is_open())
+	{
+		std::cout << "Fail to open dictionary file!";
+		return false;
+	}
+
+	char* dictionaryWord = new char[lettersCount + 1];
+	dictionaryWord[lettersCount] = '\0';
+
+	while (dictionaryFile >> dictionaryWord)
+	{
+		if (stringCompare(word, dictionaryWord) == 0)
+		{
+			dictionaryFile.close();
+			return true;
+		}
+	}
+
+	dictionaryFile.close();
+	return false;
+}
+
 bool isWordValid(char* word, char* letters, int lettersCount)
 {
 	if (!word || !letters)
@@ -73,7 +120,8 @@ bool isWordValid(char* word, char* letters, int lettersCount)
 		return false;
 	}
 
-	bool isValid = false;
+	bool areValidLetters = false;
+	bool isValidInDictionary = false;
 	int wordLen = getWordLen(word);
 	bool* letterOccurences = new bool[lettersCount];
 	fillWithZeros(letterOccurences, lettersCount);
@@ -81,17 +129,31 @@ bool isWordValid(char* word, char* letters, int lettersCount)
 	// Check if the given letters contain all letters from our word 
 	for (int i = 0; i < wordLen; i++)
 	{
-		isValid = isLetterInGivenLetters(word[i], letters, letterOccurences, lettersCount);
-		if (!isValid)
+		areValidLetters = isLetterInGivenLetters(word[i], letters, letterOccurences, lettersCount);
+		if (!areValidLetters)
 		{
 			break;
 		}
 	}
 
 	// Check if the dictionary contains the word
+	if (!areValidLetters)
+	{
+		return false;
+	}
+	isValidInDictionary = isWordInDictionary(word, lettersCount);
 
 	delete[] letterOccurences;
-	return isValid;
+
+	// Check if both letters are from the given letters & word is in dictionary
+	if (areValidLetters && isValidInDictionary)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void playGame(unsigned lettersCount, unsigned roundsCount)
@@ -150,6 +212,7 @@ void editSettings(unsigned& lettersCount, unsigned& roundsCount)
 	std::cout << "0. Change letters count" << std::endl;
 	std::cout << "1. Change rounds count" << std::endl;
 	std::cout << "2. Change both letters and rounds" << std::endl;
+	std::cout << "3. Exit" << std::endl;
 	std::cin >> option;
 
 	switch (option)
@@ -188,7 +251,10 @@ void editSettings(unsigned& lettersCount, unsigned& roundsCount)
 			lettersCount = changedLettersCount;
 			roundsCount = changedRoundsCount;
 			break;
-
+		case 3:
+			std::cout << "Returning to menu...";
+			return;
+			break;
 		default:
 			return;
 	}
@@ -200,6 +266,7 @@ void addToDictionary()
 
 	std::fstream ofs;
 	ofs.open("Dictionary.txt", std::ios::app);
+
 	if (!ofs.is_open())
 	{
 		std::cout << "Fail to open file!" << std::endl;
@@ -216,7 +283,6 @@ void addToDictionary()
 
 	ofs.clear();
 	ofs.close();
-	return;
 }
 
 int main()

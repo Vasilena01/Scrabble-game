@@ -1,6 +1,6 @@
 ﻿  Scrabble.cpp
-D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(57,49): warning C4804: '<': unsafe use of type 'bool' in operation
-D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(97,22): warning C4018: '<=': signed/unsigned mismatch
-D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(123,20): warning C4018: '<': signed/unsigned mismatch
-D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(236,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(76,49): warning C4804: '<': unsafe use of type 'bool' in operation
+D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(164,22): warning C4018: '<=': signed/unsigned mismatch
+D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(190,20): warning C4018: '<': signed/unsigned mismatch
+D:\Projects\C++\Scrabble game\Scrabble\Scrabble.cpp(307,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Scrabble.vcxproj -> D:\Projects\C++\Scrabble game\Scrabble\x64\Debug\Scrabble.exe
