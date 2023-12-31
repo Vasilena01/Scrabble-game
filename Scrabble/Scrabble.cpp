@@ -4,6 +4,15 @@
 const int MAX_LETTERS_COUNT = 100;
 const int MAX_ROUNDS_COUNT = 30;
 
+void printLetters(const char* letters, int lettersCount)
+{
+	for (int i = 0; i < lettersCount; i++)
+	{
+		std::cout << letters[i] << " ";
+	}
+	std::cout << std::endl;
+}
+
 int getWordLen(char* word)
 {
 	if (!word)
@@ -139,6 +148,8 @@ bool isWordValid(char* word, char* letters, int lettersCount)
 	// Check if the dictionary contains the word
 	if (!areValidLetters)
 	{
+		std::cout << "Invalid word. Try again with: ";
+		printLetters(letters, lettersCount);
 		return false;
 	}
 	isValidInDictionary = isWordInDictionary(word, lettersCount);
@@ -152,6 +163,8 @@ bool isWordValid(char* word, char* letters, int lettersCount)
 	}
 	else
 	{
+		std::cout << "Invalid word. Try again with: ";
+		printLetters(letters, lettersCount);
 		return false;
 	}
 }
