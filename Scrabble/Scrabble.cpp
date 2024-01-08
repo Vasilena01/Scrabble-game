@@ -131,6 +131,7 @@ bool isWordValid(char* word, char* letters, int lettersCount)
 
 	bool areValidLetters = false;
 	bool isValidInDictionary = false;
+
 	int wordLen = getWordLen(word);
 	bool* letterOccurences = new bool[lettersCount];
 	fillWithZeros(letterOccurences, lettersCount);
@@ -273,12 +274,9 @@ void editSettings(unsigned& lettersCount, unsigned& roundsCount)
 	}
 }
 
-void addToDictionary()
+void addToDictionary(unsigned lettersCount)
 {
-	const int MAX_WORD_SIZE = 10;
-
-	std::fstream ofs;
-	ofs.open("Dictionary.txt", std::ios::app);
+	std::fstream ofs("Dictionary.txt", std::ios::app);
 
 	if (!ofs.is_open())
 	{
@@ -286,16 +284,19 @@ void addToDictionary()
 		return;
 	}
 
-	char word[MAX_WORD_SIZE + 1] = "";
-	std::cout << "Enter a word to insert: " << std::endl;
-	std::cin >> word;
-	if (word)
-	{
-		ofs << "\n" << word;
-	}
+	char* word = new char[lettersCount + 1];
+	word[lettersCount] = '\0';
+
+	do {
+		std::cout << "Enter a valid word to insert: " << std::endl;
+		std::cin >> word;
+	} while (word && isWordInDictionary(word, lettersCount));
+	
+	ofs << "\n" << word;
 
 	ofs.clear();
 	ofs.close();
+	delete[] word;
 }
 
 int main()
@@ -326,7 +327,7 @@ int main()
 				std::cout << "Rounds: " << roundsCount << std::endl;
 				break;
 			case 3:
-				addToDictionary();
+				addToDictionary(lettersCount);
 				break;
 			default:
 				readyToPlay = false;
